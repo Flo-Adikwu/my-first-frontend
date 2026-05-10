@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your First Frontend — Florence Adikwu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #0f0e0c;
+      --cream: #f7f4ee;
+      --warm: #f0ebe0;
+      --accent: #c8490e;
+      --accent-light: #f4a57a;
+      --muted: #7a7060;
+      --border: #ddd8cc;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 2.5rem;
+      background: var(--cream);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .nav-cta {
+      background: var(--accent);
+      color: white;
+      padding: 0.55rem 1.4rem;
+      border-radius: 2px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.88; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding-top: 72px;
+    }
+
+    .hero-left {
+      padding: 7rem 4rem 5rem 5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-right: 1px solid var(--border);
+    }
+
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 1.8rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.1s forwards;
+    }
+
+    .hero-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 5vw, 4.2rem);
+      line-height: 1.1;
+      font-weight: 900;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.2s forwards;
+    }
+
+    .hero-headline em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 420px;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.35s forwards;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.45s forwards;
+    }
+
+    .btn-primary {
+      background: var(--ink);
+      color: var(--cream);
+      padding: 1rem 2.2rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: var(--accent); }
+
+    .hero-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .hero-price span {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 300;
+      color: var(--muted);
+      display: block;
+    }
+
+    .hero-right {
+      background: var(--warm);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 5rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-right::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      opacity: 0.6;
+    }
+
+    .hero-right::after {
+      content: '';
+      position: absolute;
+      bottom: -40px; left: -40px;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      opacity: 0.4;
+    }
+
+    .code-card {
+      background: var(--ink);
+      color: #c8c3b8;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      line-height: 1.9;
+      padding: 2rem;
+      border-radius: 4px;
+      position: relative;
+      z-index: 1;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.5s forwards;
+    }
+
+    .code-card .comment { color: #6b6456; }
+    .code-card .tag { color: var(--accent-light); }
+    .code-card .attr { color: #9ecfb0; }
+    .code-card .val { color: #f4c88a; }
+    .code-card .text { color: #e8e3d8; }
+
+    .outcome-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 2rem;
+      position: relative;
+      z-index: 1;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.65s forwards;
+    }
+
+    .tag-pill {
+      background: white;
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.9rem;
+      font-size: 0.78rem;
+      border-radius: 100px;
+      color: var(--muted);
+    }
+
+    /* ── FOR YOU ── */
+    .section {
+      padding: 7rem 5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 3.5rem;
+      max-width: 600px;
+    }
+
+    .for-you-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .for-you-item {
+      background: var(--cream);
+      padding: 2.5rem;
+      display: flex;
+      gap: 1.2rem;
+      align-items: flex-start;
+    }
+
+    .for-you-icon {
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+      width: 28px;
+      height: 28px;
+      color: var(--accent);
+    }
+
+    .get-item .icon {
+      width: 32px;
+      height: 32px;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .for-you-item h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .for-you-item p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── INSTRUCTOR ── */
+    .instructor {
+      padding: 7rem 5rem;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 6rem;
+      align-items: center;
+    }
+
+    .instructor-quote {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+      font-style: italic;
+      line-height: 1.4;
+      color: var(--ink);
+    }
+
+    .instructor-quote strong {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .instructor-bio h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+
+    .instructor-bio .role {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    .instructor-bio p {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      line-height: 1.75;
+    }
+
+    .stat-row {
+      display: flex;
+      gap: 2.5rem;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .stat h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--accent);
+    }
+
+    .stat p {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    /* ── CURRICULUM ── */
+    .curriculum {
+      padding: 7rem 5rem;
+      border-top: 1px solid var(--border);
+      background: var(--warm);
+    }
+
+    .weeks {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      margin-top: 3.5rem;
+    }
+
+    .week-card {
+      background: var(--cream);
+      border: 1px solid var(--border);
+      padding: 2.5rem;
+    }
+
+    .week-number {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    .week-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+    }
+
+    .week-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .week-card ul li {
+      font-size: 0.88rem;
+      color: var(--muted);
+      padding-left: 1rem;
+      position: relative;
+    }
+
+    .week-card ul li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 0.7rem;
+    }
+
+    .week-card .project {
+      margin-top: 1.5rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── WHAT YOU GET ── */
+    .what-you-get {
+      padding: 7rem 5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .get-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 3.5rem;
+    }
+
+    .get-item {
+      padding: 2rem;
+      border: 1px solid var(--border);
+    }
+
+    .get-item .icon {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .get-item h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .get-item p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── CTA ── */
+    .final-cta {
+      padding: 8rem 5rem;
+      border-top: 1px solid var(--border);
+      background: var(--ink);
+      color: var(--cream);
+      text-align: center;
+    }
+
+    .final-cta .section-label { color: var(--accent-light); }
+
+    .final-cta .section-title {
+      color: var(--cream);
+      margin: 0 auto 1.5rem;
+    }
+
+    .final-cta p {
+      color: #a09880;
+      font-size: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .cta-box {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .btn-big {
+      background: var(--accent);
+      color: white;
+      padding: 1.2rem 3.5rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      letter-spacing: 0.02em;
+      transition: opacity 0.2s;
+    }
+    .btn-big:hover { opacity: 0.88; }
+
+    .cta-note {
+      font-size: 0.8rem;
+      color: #6b6456;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .price-display {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: var(--cream);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+
+    .price-sub {
+      font-size: 0.85rem;
+      color: #6b6456;
+      margin-bottom: 2.5rem !important;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2rem 5rem;
+      border-top: 1px solid #1e1c19;
+      background: var(--ink);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    footer p {
+      font-size: 0.78rem;
+      color: #4a4540;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-left { padding: 5rem 2rem 3rem; border-right: none; }
+      .hero-right { padding: 3rem 2rem; }
+      .instructor { grid-template-columns: 1fr; gap: 3rem; padding: 5rem 2rem; }
+      .section, .curriculum, .what-you-get, .final-cta { padding: 5rem 2rem; }
+      .for-you-grid, .weeks { grid-template-columns: 1fr; }
+      .get-grid { grid-template-columns: 1fr; }
+      nav { padding: 1rem 1.5rem; }
+      footer { padding: 2rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-logo">Florence Adikwu</span>
+  <a href="#enroll" class="nav-cta">Enroll — ₦50,000</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <p class="hero-eyebrow">4-Week Text-Based Course</p>
+    <h1 class="hero-headline">
+      Build your <em>first</em> website.<br>No degree required.
+    </h1>
+    <p class="hero-sub">
+      A practical, beginner-friendly course that takes you from "I don't know where to start" 
+      to a real, live website with your name on it — in four weeks.
+    </p>
+    <div class="hero-actions">
+      <a href="#enroll" class="btn-primary">Get Started</a>
+      <div class="hero-price">
+        ₦50,000
+        <span>One-time payment · Lifetime access</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="code-card">
+      <div class="comment">&lt;!-- Your first line of code --&gt;</div>
+      <div>
+        <span class="tag">&lt;h1</span> 
+        <span class="attr">class</span>=<span class="val">"hello-world"</span><span class="tag">&gt;</span>
+      </div>
+      <div>&nbsp;&nbsp;<span class="text">Hi, I'm Florence.</span></div>
+      <div>&nbsp;&nbsp;<span class="text">I build things for the web.</span></div>
+      <div><span class="tag">&lt;/h1&gt;</span></div>
+      <br>
+      <div class="comment">&lt;!-- Four weeks from now, this will be you --&gt;</div>
+    </div>
+    <div class="outcome-tags">
+      <span class="tag-pill">✦ HTML &amp; CSS</span>
+      <span class="tag-pill">✦ JavaScript basics</span>
+      <span class="tag-pill">✦ Responsive design</span>
+      <span class="tag-pill">✦ Live deployment</span>
+      <span class="tag-pill">✦ Portfolio project</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOR YOU -->
+<section class="section">
+  <p class="section-label">Is this for me?</p>
+  <h2 class="section-title">This course was built for people exactly like you.</h2>
+  <div class="for-you-grid">
+    <div class="for-you-item">
+      <!-- Seedling / beginner -->
+      <svg class="for-you-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22V12"/><path d="M12 12C12 7 7 4 3 6c3 1 6 4 9 6z"/><path d="M12 12c0-5 5-8 9-6-3 1-6 4-9 6z"/>
+      </svg>
+      <div>
+        <h3>Complete Beginners</h3>
+        <p>You've never written a line of code. You're not sure where to start. This is your starting point — no assumptions, no jargon, no gatekeeping.</p>
+      </div>
+    </div>
+    <div class="for-you-item">
+      <!-- Arrows / switcher -->
+      <svg class="for-you-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 7h18M3 7l4-4M3 7l4 4M21 17H3m18 0-4-4m4 4-4 4"/>
+      </svg>
+      <div>
+        <h3>Career Switchers</h3>
+        <p>You studied something else — English, Business, Communication — and now you want in on tech. Your background isn't a disadvantage. It's your edge.</p>
+      </div>
+    </div>
+    <div class="for-you-item">
+      <!-- Refresh / tried before -->
+      <svg class="for-you-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>
+      </svg>
+      <div>
+        <h3>People Who've Tried Before</h3>
+        <p>You started a YouTube tutorial, got stuck at week two, and closed the tab. This time, the lessons are clear, the pacing is honest, and you won't be left behind.</p>
+      </div>
+    </div>
+    <div class="for-you-item">
+      <!-- Star / women in tech -->
+      <svg class="for-you-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+      <div>
+        <h3>Women Entering Tech</h3>
+        <p>Built by a woman who navigated this space without a roadmap. You'll learn from someone who knows exactly what it feels like to figure this out from scratch.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTRUCTOR -->
+<section class="instructor">
+  <div class="instructor-quote">
+    "I studied Mass Communication.<br>I taught myself to code.<br>Then I <strong>built a career</strong> that took me global."
+  </div>
+  <div class="instructor-bio">
+    <h3>Florence Adikwu</h3>
+    <p class="role">Senior Frontend Engineer · Tech Lead · Mentor</p>
+    <p>
+      Florence is a Senior Frontend Engineer with 6+ years of experience building production interfaces for fintech companies in Nigeria and the USA - including integrating a US tax filing system and cross-continental payment 
+      infrastructure. She did all of it without a Computer Science degree.
+    </p>
+    <p>
+      As a Frontend Tech Lead at The Coding Mum, she has mentored 20+ women in tech, 
+      several of whom now hold international positions. She knows how to explain things clearly, 
+      because she had to figure them all out herself.
+    </p>
+    <div class="stat-row">
+      <div class="stat">
+        <h4>6+</h4>
+        <p>Years in<br>frontend</p>
+      </div>
+      <div class="stat">
+        <h4>20+</h4>
+        <p>Women<br>mentored</p>
+      </div>
+      <div class="stat">
+        <h4>0</h4>
+        <p>CS degrees<br>required</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CURRICULUM -->
+<section class="curriculum">
+  <p class="section-label">The Curriculum</p>
+  <h2 class="section-title">Four weeks. One live website. Zero fluff.</h2>
+  <div class="weeks">
+    <div class="week-card">
+      <p class="week-number">Week 01</p>
+      <h3>How the Web Actually Works</h3>
+      <ul>
+        <li>What happens when you open a website</li>
+        <li>HTML: structure, semantic tags, accessibility</li>
+        <li>Writing your first real webpage</li>
+        <li>Tools setup (VS Code, browser DevTools)</li>
+      </ul>
+      <p class="project">▸ Project: Your personal bio page</p>
+    </div>
+    <div class="week-card">
+      <p class="week-number">Week 02</p>
+      <h3>Making It Look Good</h3>
+      <ul>
+        <li>CSS fundamentals: box model, flexbox</li>
+        <li>Typography, colour, and spacing</li>
+        <li>Mobile-first responsive design</li>
+        <li>Why your layout breaks (and how to fix it)</li>
+      </ul>
+      <p class="project">▸ Project: Style your bio page</p>
+    </div>
+    <div class="week-card">
+      <p class="week-number">Week 03</p>
+      <h3>Making It Interactive</h3>
+      <ul>
+        <li>JavaScript basics: variables, functions, events</li>
+        <li>DOM manipulation — what it means and why it matters</li>
+        <li>Adding real behaviour to your page</li>
+        <li>Debugging without panicking</li>
+      </ul>
+      <p class="project">▸ Project: Dark mode toggle or contact form</p>
+    </div>
+    <div class="week-card">
+      <p class="week-number">Week 04</p>
+      <h3>Putting It All Together</h3>
+      <ul>
+        <li>Git basics: saving and tracking your work</li>
+        <li>Deploying to the internet (Netlify/GitHub Pages)</li>
+        <li>Building your portfolio page</li>
+        <li>What to learn next — an honest roadmap</li>
+      </ul>
+      <p class="project">▸ Project: Live portfolio — your name on the internet</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT YOU GET -->
+<section class="what-you-get">
+  <p class="section-label">What's included</p>
+  <h2 class="section-title">Everything you need. Nothing you don't.</h2>
+  <div class="get-grid">
+    <div class="get-item">
+      <!-- Book / written lessons -->
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+      </svg>
+      <h4>Written Lessons</h4>
+      <p>Clear, annotated lessons you can read at your own pace. No video buffering, no scrubbing. Just well-written explanations that respect your time.</p>
+    </div>
+    <div class="get-item">
+      <!-- Zap / exercises -->
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+      </svg>
+      <h4>Exercises Per Lesson</h4>
+      <p>Every concept comes with a hands-on exercise to lock it in. You learn by doing, not just reading.</p>
+    </div>
+    <div class="get-item">
+      <!-- Globe / live website -->
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+      </svg>
+      <h4>A Live Website</h4>
+      <p>By the end of Week 4, you'll have a real portfolio page deployed on the internet. Something you built. Something to show.</p>
+    </div>
+    <div class="get-item">
+      <!-- Compass / what's next -->
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+      </svg>
+      <h4>What's Next Guide</h4>
+      <p>A clear, honest breakdown of where to go after this course — whether that's React, freelancing, or a job application.</p>
+    </div>
+    <div class="get-item">
+      <!-- Infinity / lifetime access -->
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 12c-2-2.5-4-4-6-4a4 4 0 0 0 0 8c2 0 4-1.5 6-4z"/><path d="M12 12c2 2.5 4 4 6 4a4 4 0 0 0 0-8c-2 0-4 1.5-6 4z"/>
+      </svg>
+      <h4>Lifetime Access</h4>
+      <p>Pay once, keep it forever. Come back when you need a refresher. The content is yours.</p>
+    </div>
+    <div class="get-item">
+      <!-- Users / community -->
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+      <h4>Community Access</h4>
+      <p>Join a private community of fellow learners. Ask questions, share progress, and stay accountable.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta" id="enroll">
+  <p class="section-label">Ready to start?</p>
+  <h2 class="section-title">Your first line of code is four weeks away from becoming a website.</h2>
+  <p>One payment. Lifetime access. Real results.</p>
+  <div class="cta-box">
+    <div class="price-display">₦50,000</div>
+    <p class="price-sub">One-time · No subscription · No hidden fees</p>
+    <a href="#" class="btn-big">Enroll Now →</a>
+    <p class="cta-note">Payment via Selar or Paystack · Secure checkout</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 Florence Adikwu. All rights reserved.</p>
+  <a href="https://florenceadikwu-portfolio.vercel.app/" target="_blank" style="color:#f4a57a; font-size:0.78rem; font-family:'DM Mono',monospace; text-decoration:underline;">florenceadikwu-portfolio.vercel.app</a>
+</footer>
+
+</body>
+</html>
